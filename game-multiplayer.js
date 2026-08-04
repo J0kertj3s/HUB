@@ -24,6 +24,7 @@
     document.querySelectorAll('.room-panel').forEach((panel) => { panel.hidden = true; });
     let room = null;
     const status = multiplayer ? addMultiplayerStatus() : null;
+    let ready = !multiplayer; // only ready when we've received a room update in multiplayer
 
     function updateStatus(payload) {
       if (!status || !payload) return;
@@ -47,12 +48,23 @@
 
     const resume = () => socket.emit("game:resume", { game, roomId, username: currentUsername() });
     socket.on("connect", () => { onConnect?.(socket.id); resume(); });
-    socket.on("room:update", (payload) => {
-      if (payload?.game !== game) return;
+
+    socket.on("lobby:joined", (payload) => {
+      if (!payload || (payload.game || "").toLowerCase() !== game) return;
       room = payload;
+      ready = true;
       updateStatus(payload);
       onRoomState?.(payload);
     });
+
+    socket.on("room:update", (payload) => {
+      if (payload?.game !== game) return;
+      room = payload;
+      ready = true;
+      updateStatus(payload);
+      onRoomState?.(payload);
+    });
+
     socket.on("lobby:error", ({ message }) => {
       if (status) status.innerHTML = `<strong>Multiplayer</strong><span>${message || "Verbinding mislukt."}</span>`;
     });
@@ -63,9 +75,17 @@
       getPlayerIndex() { return Math.max(0, (room?.players || []).findIndex((player) => player.id === socket.id)); },
       getPlayers() { return room?.players || []; },
       getPlayerStates() { return room?.playerStates || {}; },
-      joinRoom() {},
-      sendState(state) { socket.emit("game:state", { state }); },
-      sendPlayerState(state) { socket.emit("game:playerState", { state }); },
+      joinRoom(code) {
+        if (!socket) {
+          // fallback: navigate to the game URL with query params
+          const target = `${location.pathname}?room=${encodeURIComponent(code || "")}&game=${encodeURIComponent(game)}`;
+          location.href = target;
+          return;
+        }
+        socket.emit("lobby:join", { game, roomId: String(code || "").trim(), username: currentUsername() });
+      },
+      sendState(state) { if (!ready) return; socket.emit("game:state", { state }); },
+      sendPlayerState(state) { if (!ready) return; socket.emit("game:playerState", { state }); },
       getRoomId() { return roomId; },
       destroy() { socket.disconnect(); }
     };
