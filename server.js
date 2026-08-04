@@ -52,7 +52,7 @@ function leaveCurrentLobby(socket) {
 app.use(express.static(__dirname));
 app.get("/api/games", (req, res) => {
   const files = fs.readdirSync(__dirname).filter((file) => file.endsWith(".html") && file !== "index.html").sort();
-  res.json(files.map((file) => ({ name: file.replace(/\.html$/i, "").replace(/[-_]/g, " "), url: file, image: `images/${file.replace(/\.html$/i, "").svg` })));
+  res.json(files.map((file) => ({ name: file.replace(/\.html$/i, "").replace(/[-_]/g, " "), url: file, image: `images/${file.replace(/\.html$/i, "")} .svg`.trim() })));
 });
 app.get("/", (req, res) => res.sendFile(path.join(__dirname, "index.html")));
 
