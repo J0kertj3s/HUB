@@ -52,22 +52,45 @@ function leaveCurrentLobby(socket) {
 app.use(express.static(__dirname));
 app.get("/api/games", (req, res) => {
   const files = fs.readdirSync(__dirname).filter((file) => file.endsWith(".html") && file !== "index.html").sort();
-  res.json(files.map((file) => ({ name: file.replace(/\.html$/i, "").replace(/[-_]/g, " "), url: file, image: `images/${file.replace(/\.html$/i, "")}.svg` })));
+  res.json(files.map((file) => ({ name: file.replace(/\.html$/i, "").replace(/[-_]/g, " "), url: file, image: `images/${file.replace(/\.html$/i, "").svg` })));
 });
 app.get("/", (req, res) => res.sendFile(path.join(__dirname, "index.html")));
 
 io.on("connection", (socket) => {
-  socket.on("lobby:create", ({ game, username }) => {
+  socket.on("lobby:create", ({ game, username, roomId }) => {
     const normalizedGame = gameId(game);
     const config = GAME_CONFIG[normalizedGame];
     if (!config) return error(socket, "Dit spel heeft geen multiplayer-lobby.");
-    let code;
-    do { code = `${normalizedGame.slice(0, 3).toUpperCase()}${Math.random().toString(36).slice(2, 6).toUpperCase()}`; } while (lobbies.has(key(normalizedGame, code)));
+
+    // If the host provided a code, validate and use it; otherwise generate a unique code.
+    let code = lobbyCode(roomId || "");
+    if (code) {
+      if (lobbies.has(key(normalizedGame, code))) return error(socket, "Deze lobbycode is al in gebruik.");
+    } else {
+      do { code = `${normalizedGame.slice(0, 3).toUpperCase()}${Math.random().toString(36).slice(2, 6).toUpperCase()}`; } while (lobbies.has(key(normalizedGame, code)));
+    }
+
     leaveCurrentLobby(socket);
-    const lobby = { key: key(normalizedGame, code), game: normalizedGame, roomId: code, maxPlayers: config.maxPlayers, status: "waiting", hostId: socket.id, players: new Map(), state: {}, playerStates: {} };
-    lobby.players.set(socket.id, { id: socket.id, name: String(username || "Speler").trim().slice(0, 30) || "Speler" });
-    lobbies.set(lobby.key, lobby); socket.join(lobby.key); socket.data.lobbyKey = lobby.key;
-    socket.emit("lobby:joined", lobbyPayload(lobby)); emitUpdate(lobby);
+
+    const lobby = {
+      key: key(normalizedGame, code),
+      game: normalizedGame,
+      roomId: code,
+      maxPlayers: config.maxPlayers,
+      status: "waiting",
+      hostId: socket.id,
+      players: new Map(),
+      state: {},
+      playerStates: {}
+    };
+
+    lobby.players.set(socket.id, { id: socket.id, name: String(username || "Speler").trim().slice(0, 30) || "Speler", connected: true });
+    lobbies.set(lobby.key, lobby);
+    socket.join(lobby.key);
+    socket.data.lobbyKey = lobby.key;
+
+    socket.emit("lobby:joined", lobbyPayload(lobby));
+    emitUpdate(lobby);
   });
 
   socket.on("lobby:join", ({ game, roomId, username }) => {
@@ -76,46 +99,70 @@ io.on("connection", (socket) => {
     if (lobby.status !== "waiting") return error(socket, "Deze lobby is niet meer beschikbaar.");
     if (lobby.players.has(socket.id)) return socket.emit("lobby:joined", lobbyPayload(lobby));
     if (lobby.maxPlayers !== null && lobby.players.size >= lobby.maxPlayers) return error(socket, "Deze lobby zit vol.");
+
+    // Prevent duplicate display names within the same lobby
+    const name = String(username || "Speler").trim().slice(0, 30) || "Speler";
+    const duplicateName = [...lobby.players.values()].some((p) => p.name === name);
+    if (duplicateName) return error(socket, "Er is al een speler met die naam in deze lobby.");
+
     leaveCurrentLobby(socket);
-    lobby.players.set(socket.id, { id: socket.id, name: String(username || "Speler").trim().slice(0, 30) || "Speler" });
-    socket.join(lobby.key); socket.data.lobbyKey = lobby.key;
-    socket.emit("lobby:joined", lobbyPayload(lobby)); emitUpdate(lobby);
+    lobby.players.set(socket.id, { id: socket.id, name, connected: true });
+    socket.join(lobby.key);
+    socket.data.lobbyKey = lobby.key;
+    socket.emit("lobby:joined", lobbyPayload(lobby));
+    emitUpdate(lobby);
   });
 
   socket.on("lobby:leave", () => { leaveCurrentLobby(socket); socket.emit("lobby:left"); });
+
   socket.on("lobby:start", () => {
     const lobby = lobbies.get(socket.data.lobbyKey);
     if (!lobby) return error(socket, "Lobby niet gevonden.");
     if (lobby.hostId !== socket.id) return error(socket, "Alleen de host mag het spel starten.");
     if (lobby.players.size < 2) return error(socket, "Wacht op minimaal één andere speler.");
-    lobby.status = "started"; io.to(lobby.key).emit("lobby:started", lobbyPayload(lobby));
+    lobby.status = "started";
+    io.to(lobby.key).emit("lobby:started", lobbyPayload(lobby));
   });
+
   // A started lobby is closed to newcomers but its players may refresh and resume safely.
   socket.on("game:resume", ({ game, roomId, username }) => {
     const lobby = lobbies.get(key(game, roomId));
     if (!lobby || lobby.status !== "started") return error(socket, "Dit spel is niet beschikbaar.");
+
     const existing = [...lobby.players.values()].find((player) => player.name === String(username || "").trim());
     if (!existing) return error(socket, "Je bent geen speler in deze lobby.");
-    lobby.players.delete(existing.id); lobby.players.set(socket.id, { ...existing, id: socket.id, connected: true });
+
+    // Replace the old socket id with the new one so players can resume after navigation/refresh
+    lobby.players.delete(existing.id);
+    lobby.players.set(socket.id, { ...existing, id: socket.id, connected: true });
+
     if (lobby.playerStates[existing.id]) {
       lobby.playerStates[socket.id] = lobby.playerStates[existing.id];
       delete lobby.playerStates[existing.id];
     }
+
     if (lobby.hostId === existing.id) lobby.hostId = socket.id;
-    socket.join(lobby.key); socket.data.lobbyKey = lobby.key; socket.emit("room:update", lobbyPayload(lobby));
+
+    socket.join(lobby.key);
+    socket.data.lobbyKey = lobby.key;
+    socket.emit("room:update", lobbyPayload(lobby));
+    emitUpdate(lobby);
   });
+
   socket.on("game:state", ({ state }) => {
     const lobby = lobbies.get(socket.data.lobbyKey);
     if (!lobby || lobby.status !== "started" || !lobby.players.has(socket.id)) return;
     lobby.state = state && typeof state === "object" ? state : {};
     io.to(lobby.key).emit("room:update", lobbyPayload(lobby));
   });
+
   socket.on("game:playerState", ({ state }) => {
     const lobby = lobbies.get(socket.data.lobbyKey);
     if (!lobby || lobby.status !== "started" || !lobby.players.has(socket.id) || !state || typeof state !== "object") return;
     lobby.playerStates[socket.id] = state;
     io.to(lobby.key).emit("room:update", lobbyPayload(lobby));
   });
+
   socket.on("disconnect", () => {
     const lobby = lobbies.get(socket.data.lobbyKey);
     if (!lobby) return;
