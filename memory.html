@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="nl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Memory Match</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        font-family: Inter, sans-serif;
+        background: radial-gradient(circle at top, #1a2240, #090d18 55%);
+        color: #edf5ff;
+      }
+
+      .memory-shell {
+        width: min(620px, calc(100% - 30px));
+        padding: 28px 20px 20px;
+        border-radius: 24px;
+        background: rgba(14, 19, 34, 0.82);
+        border: 1px solid rgba(142, 164, 255, 0.18);
+        box-shadow: 0 18px 42px rgba(0, 0, 0, 0.3);
+      }
+
+      .memory-header {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: center;
+        margin-bottom: 18px;
+      }
+
+      h2 {
+        margin: 0;
+        font-size: clamp(2rem, 5vw, 2.6rem);
+      }
+
+      .memory-board {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(68px, 1fr));
+        gap: 12px;
+      }
+
+      .memory-card {
+        height: 88px;
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 16px;
+        background: linear-gradient(135deg, #1d2d4d, #0c1020);
+        color: transparent;
+        font-size: 1.7rem;
+        font-weight: 800;
+        cursor: pointer;
+        transition: transform 0.2s ease, background 0.2s ease;
+      }
+
+      .memory-card.flipped {
+        background: linear-gradient(135deg, #4dc3ff, #7b5cff);
+        color: #f5f7ff;
+      }
+
+      .memory-status {
+        margin: 16px 0 0;
+        color: #c9d7f5;
+      }
+
+      .memory-actions {
+        display: flex;
+        justify-content: center;
+        margin-top: 18px;
+      }
+
+      .primary-btn {
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 12px;
+        padding: 10px 16px;
+        color: #edf4ff;
+        background: linear-gradient(135deg, #3a8dff, #7b5cff);
+        cursor: pointer;
+      }
+
+      .back-link {
+        display: inline-block;
+        margin-top: 18px;
+        color: #b8d2ff;
+        text-decoration: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="memory-shell">
+      <div class="memory-header">
+        <h2>Memory Match</h2>
+        <div class="hud-box">Zetten: <strong id="memoryMoves">0</strong></div>
+      </div>
+
+      <div id="memoryBoard" class="memory-board"></div>
+      <p id="memoryStatus" class="memory-status">Zoek een paar</p>
+
+      <div class="memory-actions">
+        <button type="button" id="memoryRestart" class="primary-btn">Nieuw spel</button>
+      </div>
+
+      <div style="text-align:center;">
+        <a class="back-link" href="index.html">Terug naar Game Hub</a>
+      </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="game-multiplayer.js"></script>
+    <script src="memory.js"></script>
+  </body>
+</html>

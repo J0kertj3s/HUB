@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="Boter Kaas en Eieren icon">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#5ae2ff"/>
+      <stop offset="100%" stop-color="#7b5cff"/>
+    </linearGradient>
+  </defs>
+  <rect width="200" height="200" rx="28" fill="#0f172a"/>
+  <rect x="18" y="18" width="164" height="164" rx="24" fill="url(#bg)" opacity="0.2"/>
+  <g stroke="#edf5ff" stroke-width="8" stroke-linecap="round">
+    <path d="M66 34v132M134 34v132M34 66h132M34 134h132" opacity="0.7"/>
+  </g>
+  <g fill="#edf5ff" font-family="Arial, sans-serif" font-weight="700" font-size="42" text-anchor="middle">
+    <text x="50" y="56">X</text>
+    <text x="150" y="110">O</text>
+    <text x="100" y="170">X</text>
+  </g>
+</svg>

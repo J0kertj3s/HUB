@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="nl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simon Says</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      body { margin: 0; min-height: 100vh; display: grid; place-items: center; font-family: Inter, sans-serif; background: radial-gradient(circle at top, #1a2240, #090d18 55%); color: #edf5ff; }
+      .game-shell { width: min(620px, calc(100% - 30px)); padding: 28px 20px; border-radius: 24px; background: rgba(14, 19, 34, 0.82); border: 1px solid rgba(142, 164, 255, 0.18); box-shadow: 0 18px 42px rgba(0,0,0,0.3); }
+      h2 { margin: 0; font-size: clamp(2rem, 5vw, 2.8rem); }
+      .status { margin-top: 16px; padding: 12px 14px; border-radius: 12px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: #dfeaff; font-weight: 600; }
+      .pad-grid { display: grid; grid-template-columns: repeat(2, minmax(120px, 1fr)); gap: 14px; margin-top: 20px; }
+      .pad { border: 1px solid rgba(255,255,255,0.08); border-radius: 18px; padding: 30px 0; font-size: 2rem; font-weight: 800; color: white; cursor: pointer; }
+      .pad.red { background: #ff6b6b; }
+      .pad.blue { background: #5ae2ff; }
+      .pad.green { background: #72f1b8; }
+      .pad.yellow { background: #ffd166; }
+      .primary-btn { border: none; border-radius: 12px; padding: 10px 16px; color: #edf4ff; background: linear-gradient(135deg, #3a8dff, #7b5cff); cursor: pointer; }
+      .room-panel { margin-top: 18px; padding: 14px; border-radius: 14px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); }
+      .room-row { display: flex; gap: 10px; flex-wrap: wrap; }
+      input { flex: 1; min-width: 140px; border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; background: rgba(255,255,255,0.02); color: #fff; padding: 10px 12px; }
+      .back-link { display: inline-block; margin-top: 18px; color: #b8d2ff; text-decoration: none; }
+    </style>
+  </head>
+  <body>
+    <div class="game-shell">
+      <h2>Simon Says</h2>
+      <div id="simonStatus" class="status">Start een nieuwe ronde.</div>
+      <div class="pad-grid">
+        <button class="pad red" type="button" data-pad="0">R</button>
+        <button class="pad blue" type="button" data-pad="1">B</button>
+        <button class="pad green" type="button" data-pad="2">G</button>
+        <button class="pad yellow" type="button" data-pad="3">Y</button>
+      </div>
+      <div style="display:flex; justify-content:center; margin-top:18px;">
+        <button id="simonStart" class="primary-btn" type="button">Start</button>
+      </div>
+      <div class="room-panel">
+        <div class="room-row">
+          <input id="simonRoomInput" type="text" value="SIMON1" maxlength="12" placeholder="Room code" />
+          <button id="simonJoinRoom" class="primary-btn" type="button">Join room</button>
+        </div>
+      </div>
+      <div style="text-align:center;"><a class="back-link" href="index.html">Terug naar Game Hub</a></div>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="game-multiplayer.js"></script>
+    <script src="simon.js"></script>
+  </body>
+</html>

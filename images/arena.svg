@@ -1,0 +1,15 @@
+<svg width="640" height="400" viewBox="0 0 640 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="640" height="400" rx="28" fill="url(#paint0_linear_1_2)"/>
+  <circle cx="320" cy="198" r="120" fill="#0D162D" stroke="#5AE2FF" stroke-width="4"/>
+  <circle cx="320" cy="198" r="80" fill="#1D2E43" stroke="#A86CFF" stroke-width="3"/>
+  <circle cx="250" cy="170" r="22" fill="#FF69D8"/>
+  <circle cx="390" cy="225" r="18" fill="#5AE2FF"/>
+  <path d="M220 260L300 220L360 260L420 220" stroke="#A86CFF" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="320" y="340" text-anchor="middle" fill="#EDF4FF" font-size="30" font-family="Arial, sans-serif" font-weight="700">ARENA</text>
+  <defs>
+    <linearGradient id="paint0_linear_1_2" x1="0" y1="0" x2="640" y2="400" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0B1120"/>
+      <stop offset="1" stop-color="#2E184B"/>
+    </linearGradient>
+  </defs>
+</svg>

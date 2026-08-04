@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="nl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tetris</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        font-family: Inter, sans-serif;
+        background: radial-gradient(circle at top, #1a2240, #090d18 55%);
+        color: #edf5ff;
+      }
+
+      .game-page {
+        width: min(760px, calc(100% - 30px));
+        padding: 28px 24px;
+        border-radius: 24px;
+        background: rgba(14, 19, 34, 0.8);
+        border: 1px solid rgba(142, 164, 255, 0.18);
+        box-shadow: 0 18px 42px rgba(0, 0, 0, 0.3);
+        text-align: center;
+      }
+
+      h2 {
+        margin-top: 0;
+        font-size: clamp(2rem, 5vw, 3rem);
+      }
+
+      p {
+        color: #9aa9c7;
+        line-height: 1.6;
+      }
+
+      .tetris-box {
+        display: inline-grid;
+        grid-template-columns: repeat(10, 26px);
+        gap: 2px;
+        padding: 12px;
+        background: rgba(255,255,255,0.03);
+        border-radius: 14px;
+      }
+
+      .cell {
+        width: 26px;
+        height: 26px;
+        border-radius: 6px;
+        background: rgba(255,255,255,0.04);
+      }
+
+      .cell.filled {
+        background: linear-gradient(135deg, #5ae2ff, #7b5cff);
+      }
+
+      .action-row {
+        margin-top: 18px;
+      }
+
+      .primary-btn {
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 12px;
+        padding: 10px 16px;
+        color: #edf4ff;
+        background: linear-gradient(135deg, #3a8dff, #7b5cff);
+        cursor: pointer;
+      }
+
+      .game-page a {
+        display: inline-block;
+        margin-top: 18px;
+        color: #b8d2ff;
+        text-decoration: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="game-page">
+      <h2>Tetris</h2>
+      <div id="tetrisBoard" class="tetris-box" aria-label="Tetris speelveld"></div>
+      <div class="action-row">
+        <button id="tetrisRestart" type="button" class="primary-btn">Nieuw spel</button>
+      </div>
+      <a href="index.html">Terug naar Game Hub</a>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="game-multiplayer.js"></script>
+    <script>
+      const boardEl = document.getElementById('tetrisBoard');
+      const restartBtn = document.getElementById('tetrisRestart');
+      const multiplayer = window.GameMultiplayer.createMultiplayerController({ gameName: 'tetris', onRoomState() {} });
+      const rows = 14;
+      const cols = 10;
+      const pieces = [
+        [[1,1,1,1]],
+        [[1,1],[1,1]],
+        [[1,1,0],[0,1,1]],
+        [[0,1,1],[1,1,0]],
+        [[1,0,0],[1,1,1]],
+        [[0,0,1],[1,1,1]],
+        [[1,1,1],[0,1,0]]
+      ];
+
+      let board = Array.from({ length: rows }, () => Array(cols).fill(0));
+      let active = null;
+      let tick = null;
+      let score = 0;
+
+      function buildBoard(displayBoard = board) {
+        boardEl.innerHTML = '';
+        for (let y = 0; y < rows; y += 1) {
+          for (let x = 0; x < cols; x += 1) {
+            const cell = document.createElement('div');
+            cell.className = 'cell';
+            if (displayBoard[y][x]) cell.classList.add('filled');
+            boardEl.appendChild(cell);
+          }
+        }
+      }
+
+      function createPiece() {
+        const shape = pieces[Math.floor(Math.random() * pieces.length)];
+        const x = Math.floor((cols - shape[0].length) / 2);
+        const y = 0;
+        return { shape, x, y };
+      }
+
+      function updateBoard() {
+        const working = board.map((row) => [...row]);
+        if (active) {
+          active.shape.forEach((line, y) => {
+            line.forEach((value, x) => {
+              if (value) {
+                const boardY = active.y + y;
+                const boardX = active.x + x;
+                if (boardY >= 0 && boardY < rows && boardX >= 0 && boardX < cols) {
+                  working[boardY][boardX] = 1;
+                }
+              }
+            });
+          });
+        }
+        buildBoard(working);
+      }
+
+      function tickGame() {
+        if (!active) {
+          active = createPiece();
+          updateBoard();
+          return;
+        }
+
+        const nextY = active.y + 1;
+        const canMove = active.shape.every((line, y) => line.every((value, x) => {
+          const boardY = nextY + y;
+          const boardX = active.x + x;
+          return !value || (boardY < rows && boardX >= 0 && boardX < cols && (!board[boardY][boardX] || boardY >= active.y + y));
+        }));
+
+        if (canMove) {
+          active.y = nextY;
+        } else {
+          active = null;
+          for (let y = rows - 1; y >= 0; y -= 1) {
+            if (board[y].every(Boolean)) {
+              board.splice(y, 1);
+              board.unshift(Array(cols).fill(0));
+              score += 100;
+              if (multiplayer.isMultiplayer()) multiplayer.sendPlayerState({ score, status: 'speelt' });
+            }
+          }
+        }
+
+        updateBoard();
+      }
+
+      window.addEventListener('keydown', (event) => {
+        if (!active) return;
+        if (event.key === 'ArrowLeft' && active.x > 0) active.x -= 1;
+        if (event.key === 'ArrowRight' && active.x + active.shape[0].length < cols) active.x += 1;
+        if (event.key === 'ArrowDown') active.y += 1;
+      });
+
+      restartBtn.addEventListener('click', () => {
+        board = Array.from({ length: rows }, () => Array(cols).fill(0));
+        score = 0;
+        if (multiplayer.isMultiplayer()) multiplayer.sendPlayerState({ score, status: 'speelt' });
+        active = createPiece();
+        updateBoard();
+      });
+
+      active = createPiece();
+      updateBoard();
+      tick = setInterval(tickGame, 450);
+    </script>
+  </body>
+</html>

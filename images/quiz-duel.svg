@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="Quiz Duel icon">
+  <rect width="200" height="200" rx="28" fill="#0f172a"/>
+  <rect x="24" y="30" width="152" height="140" rx="20" fill="#1d4ed8" opacity="0.8"/>
+  <text x="100" y="92" font-size="54" font-weight="700" font-family="Arial, sans-serif" text-anchor="middle" fill="#edf5ff">?</text>
+  <text x="100" y="140" font-size="18" font-weight="700" font-family="Arial, sans-serif" text-anchor="middle" fill="#dbeafe">DUEL</text>
+</svg>

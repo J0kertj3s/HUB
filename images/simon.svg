@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="Simon Says icon">
+  <rect width="200" height="200" rx="28" fill="#0f172a"/>
+  <g>
+    <circle cx="60" cy="60" r="32" fill="#ff6b6b"/>
+    <circle cx="140" cy="60" r="32" fill="#5ae2ff"/>
+    <circle cx="60" cy="140" r="32" fill="#72f1b8"/>
+    <circle cx="140" cy="140" r="32" fill="#ffd166"/>
+  </g>
+  <circle cx="100" cy="100" r="26" fill="#0f172a"/>
+  <text x="100" y="108" font-size="20" font-weight="700" font-family="Arial, sans-serif" text-anchor="middle" fill="#edf5ff">S</text>
+</svg>

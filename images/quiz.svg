@@ -1,0 +1,17 @@
+<svg width="640" height="400" viewBox="0 0 640 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="640" height="400" rx="28" fill="url(#paint0_linear_1_2)"/>
+  <rect x="110" y="80" width="420" height="230" rx="22" fill="#0E1B31" stroke="#5AE2FF" stroke-width="3"/>
+  <circle cx="190" cy="160" r="34" fill="#A86CFF"/>
+  <circle cx="450" cy="160" r="34" fill="#5AE2FF"/>
+  <circle cx="190" cy="230" r="34" fill="#5AE2FF"/>
+  <circle cx="450" cy="230" r="34" fill="#FF69D8"/>
+  <path d="M175 156.5L190 171.5L205 156.5" stroke="#0D1528" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M180 228L190 238L200 228" stroke="#0D1528" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="320" y="345" text-anchor="middle" fill="#EDF4FF" font-size="30" font-family="Arial, sans-serif" font-weight="700">QUIZ</text>
+  <defs>
+    <linearGradient id="paint0_linear_1_2" x1="0" y1="0" x2="640" y2="400" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#101A2C"/>
+      <stop offset="1" stop-color="#2A184C"/>
+    </linearGradient>
+  </defs>
+</svg>

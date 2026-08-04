@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="nl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Game Hub</title>
+    <meta
+      name="description"
+      content="Game Hub - neon game portal met login, zoekfunctie, favorieten en beheer."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="logged-out">
+    <div class="bg-orb orb-one"></div>
+    <div class="bg-orb orb-two"></div>
+    <div class="bg-orb orb-three"></div>
+
+    <div class="app-shell page-shell">
+      <header class="topbar glass-panel">
+        <div class="brand-wrap">
+          <div class="brand-mark">G</div>
+          <div>
+            <p class="eyebrow">Arcade Collection</p>
+            <h1 id="appTitle">Game Hub</h1>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <button class="view-btn is-active" data-view="all">Alle spellen</button>
+          <button class="view-btn" data-view="favorites">Favorieten</button>
+          <button id="openAccountModal" class="action-btn">Mijn account</button>
+          <button id="openAddGameModal" class="action-btn">Nieuw spel toevoegen</button>
+          <button id="openAdminPanel" class="action-btn hidden">Gebruikers beheren</button>
+          <button id="logoutBtn" class="action-btn danger">Uitloggen</button>
+        </div>
+      </header>
+
+      <main class="content">
+        <section class="discover-panel glass-panel">
+          <div class="search-row">
+            <label class="search-box" for="searchInput">
+              <span class="search-icon">⌕</span>
+              <input
+                id="searchInput"
+                type="search"
+                placeholder="Zoek naar een spel..."
+                aria-label="Zoek naar een spel"
+              />
+            </label>
+          </div>
+        </section>
+
+        <section class="status-bar">
+          <span id="visibleCount" class="status-text">0 spellen zichtbaar</span>
+          <div class="status-actions">
+            <span id="currentUserLabel" class="status-pill user-badge">Niet ingelogd</span>
+            <span class="status-pill">Live update</span>
+          </div>
+        </section>
+
+        <section id="gameGrid" class="game-grid" aria-live="polite"></section>
+      </main>
+    </div>
+
+    <div id="loginModal" class="modal visible">
+      <div class="modal-card glass-panel">
+        <div class="modal-header">
+          <p class="eyebrow">Toegang</p>
+          <h2>Inloggen</h2>
+        </div>
+
+        <form id="loginForm" class="stack-form">
+          <label>
+            <span>Gebruikersnaam</span>
+            <input type="text" id="loginUsername" placeholder="bijv. alice" required />
+          </label>
+
+          <label>
+            <span>Wachtwoord</span>
+            <input type="password" id="loginPassword" placeholder="••••••••" required />
+          </label>
+
+          <button type="submit" class="primary-btn">Inloggen</button>
+          <p class="login-hint">Demo accounts: alice / 123456, bob / 123456, admin / admin123</p>
+        </form>
+
+        <p id="loginError" class="form-message error"></p>
+      </div>
+    </div>
+
+    <div id="accountModal" class="modal hidden">
+      <div class="modal-card glass-panel">
+        <div class="modal-header">
+          <p class="eyebrow">Profiel</p>
+          <h2>Mijn account</h2>
+        </div>
+
+        <form id="accountForm" class="stack-form">
+          <label>
+            <span>Gebruikersnaam</span>
+            <input type="text" id="accountUsername" placeholder="Nieuwe gebruikersnaam" required />
+          </label>
+
+          <label>
+            <span>Nieuw wachtwoord</span>
+            <input type="password" id="accountPassword" placeholder="Laat leeg om niet te wijzigen" />
+          </label>
+
+          <label>
+            <span>Huidig wachtwoord</span>
+            <input type="password" id="currentPassword" placeholder="Vul je huidige wachtwoord in" required />
+          </label>
+
+          <div class="two-col">
+            <button type="submit" class="primary-btn">Opslaan</button>
+            <button type="button" id="closeAccountModal" class="secondary-btn">Sluiten</button>
+          </div>
+        </form>
+
+        <p id="accountMessage" class="form-message"></p>
+      </div>
+    </div>
+
+    <div id="addGameModal" class="modal hidden">
+      <div class="modal-card glass-panel">
+        <div class="modal-header">
+          <p class="eyebrow">Game catalogus</p>
+          <h2>Nieuw spel toevoegen</h2>
+        </div>
+
+        <form id="addGameForm" class="stack-form">
+          <label>
+            <span>Naam</span>
+            <input type="text" id="newGameName" placeholder="Bijv. Rocket Dash" required />
+          </label>
+
+          <label>
+            <span>Beschrijving</span>
+            <textarea id="newGameDescription" rows="3" placeholder="Korte beschrijving van het spel" required></textarea>
+          </label>
+
+          <label>
+            <span>Afbeelding</span>
+            <input type="text" id="newGameImage" placeholder="images/rocket.svg" required />
+          </label>
+
+          <label>
+            <span>Speelpagina</span>
+            <input type="text" id="newGameUrl" placeholder="rocket.html" required />
+          </label>
+
+          <div class="two-col">
+            <button type="submit" class="primary-btn">Opslaan</button>
+            <button type="button" id="closeAddGameModal" class="secondary-btn">Annuleren</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div id="adminModal" class="modal hidden">
+      <div class="modal-card glass-panel wide">
+        <div class="modal-header">
+          <p class="eyebrow">Beheer</p>
+          <h2>Gebruikers en instellingen</h2>
+        </div>
+
+        <div class="admin-layout">
+          <section class="admin-panel">
+            <h3>Gebruikers</h3>
+            <ul id="userList" class="user-list"></ul>
+
+            <form id="addUserForm" class="stack-form compact">
+              <label>
+                <span>Nieuwe gebruikersnaam</span>
+                <input type="text" id="newUsername" placeholder="bijv. charlie" required />
+              </label>
+
+              <label>
+                <span>Wachtwoord</span>
+                <input type="password" id="newPassword" placeholder="••••••••" required />
+              </label>
+
+              <label>
+                <span>Rol</span>
+                <select id="newUserRole">
+                  <option value="user">Gebruiker</option>
+                  <option value="admin">Admin</option>
+                </select>
+              </label>
+
+              <button type="submit" class="primary-btn">Gebruiker toevoegen</button>
+            </form>
+          </section>
+
+          <section class="admin-panel">
+            <h3>Spellen</h3>
+            <ul id="gameList" class="user-list"></ul>
+          </section>
+
+          <section class="admin-panel">
+            <h3>Instellingen</h3>
+            <form id="settingsForm" class="stack-form compact">
+              <label>
+                <span>Site titel</span>
+                <input type="text" id="siteTitleInput" placeholder="Game Hub" />
+              </label>
+
+              <label>
+                <span>Accent kleur</span>
+                <select id="themeAccentSelect">
+                  <option value="blue">Blauw</option>
+                  <option value="purple">Paars</option>
+                  <option value="pink">Roze</option>
+                </select>
+              </label>
+
+              <button type="submit" class="primary-btn">Instellingen opslaan</button>
+            </form>
+          </section>
+        </div>
+
+        <div class="two-col modal-actions">
+          <button type="button" id="closeAdminPanel" class="secondary-btn">Sluiten</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="gameLobbyModal" class="modal hidden">
+      <div class="modal-card glass-panel wide">
+        <div class="modal-header">
+          <p class="eyebrow">Spel lobby</p>
+          <h2 id="lobbyGameTitle">Spel</h2>
+        </div>
+
+        <div class="lobby-mode-switch">
+          <button type="button" class="lobby-mode-btn is-active" data-lobby-mode="computer">Speel tegen computer</button>
+          <button type="button" class="lobby-mode-btn" data-lobby-mode="player">Speel tegen speler</button>
+        </div>
+
+        <div id="computerModePanel" class="mode-panel">
+          <p id="lobbyModeDescription">Je speelt direct tegen de computer in deze game.</p>
+          <button id="lobbySubmitBtn" class="primary-btn" type="button">Speel!</button>
+        </div>
+
+        <div id="playerModePanel" class="mode-panel hidden">
+          <p>Kies hoe je de wachtkamer wilt gebruiken.</p>
+          <div class="two-col">
+            <button id="createLobbyRoomBtn" class="lobby-role-btn primary-btn is-active" type="button">Host een spel</button>
+            <button id="joinLobbyRoomBtn" class="lobby-role-btn secondary-btn" type="button">Join een spel</button>
+          </div>
+
+          <div class="stack-form lobby-form">
+            <label id="lobbyCodeLabel" class="hidden">
+              <span>Lobbycode (alleen nodig om deel te nemen)</span>
+              <input id="lobbyRoomCode" type="text" maxlength="12" placeholder="bijv. TIC1" />
+            </label>
+            <button id="lobbyRoomSubmitBtn" class="primary-btn" type="button">Naar wachtruimte</button>
+          </div>
+        </div>
+
+        <div id="waitingRoomPanel" class="mode-panel hidden">
+          <div class="lobby-meta">
+            <p><strong>Host:</strong> <span id="lobbyHostName">-</span></p>
+            <p><strong>Lobbycode:</strong> <span id="lobbyRoomCodeDisplay">-</span></p>
+          </div>
+
+          <ul id="lobbyPlayerList" class="user-list lobby-list"></ul>
+          <p id="lobbyPlayerCount" class="login-hint"></p>
+          <p id="lobbyWaitingMessage" class="login-hint">Wachten tot de host het spel start...</p>
+
+          <div class="two-col">
+            <button id="lobbyStartBtn" class="primary-btn" type="button">Start spel</button>
+            <button id="lobbyLeaveBtn" class="secondary-btn" type="button">Weggaan</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>

@@ -1,0 +1,14 @@
+<svg width="640" height="400" viewBox="0 0 640 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="640" height="400" rx="28" fill="url(#paint0_linear_1_2)"/>
+  <circle cx="320" cy="190" r="125" fill="#0E1A31" stroke="#5AE2FF" stroke-width="4"/>
+  <path d="M320 90L360 160L440 190L360 220L320 290L280 220L200 190L280 160L320 90Z" fill="#A86CFF" fill-opacity="0.85"/>
+  <circle cx="320" cy="190" r="32" fill="#5AE2FF"/>
+  <path d="M120 300L220 120L310 250L430 130L520 300" stroke="#FF69D8" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="320" y="345" text-anchor="middle" fill="#EDF4FF" font-size="30" font-family="Arial, sans-serif" font-weight="700">NOVA</text>
+  <defs>
+    <linearGradient id="paint0_linear_1_2" x1="0" y1="0" x2="640" y2="400" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#091521"/>
+      <stop offset="1" stop-color="#301D4A"/>
+    </linearGradient>
+  </defs>
+</svg>

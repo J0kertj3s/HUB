@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="nl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Snake</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        font-family: Inter, sans-serif;
+        background: radial-gradient(circle at top, #1a2240, #090d18 55%);
+        color: #edf5ff;
+      }
+
+      .snake-shell {
+        width: min(620px, calc(100% - 30px));
+        padding: 28px 20px 20px;
+        border-radius: 24px;
+        background: rgba(14, 19, 34, 0.82);
+        border: 1px solid rgba(142, 164, 255, 0.18);
+        box-shadow: 0 18px 42px rgba(0, 0, 0, 0.3);
+      }
+
+      .snake-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+
+      .snake-header h2 {
+        margin: 0;
+        font-size: clamp(2rem, 5vw, 2.6rem);
+      }
+
+      .hud {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .hud-box {
+        padding: 8px 12px;
+        border-radius: 10px;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.08);
+        color: #dbe8ff;
+      }
+
+      canvas {
+        width: 100%;
+        max-width: 520px;
+        aspect-ratio: 1;
+        display: block;
+        margin: 0 auto;
+        border-radius: 18px;
+        border: 1px solid rgba(255, 255, 255, 0.07);
+        background: #0d1220;
+      }
+
+      .snake-actions {
+        display: flex;
+        justify-content: center;
+        margin-top: 18px;
+        gap: 12px;
+      }
+
+      .action-btn,
+      .primary-btn {
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 12px;
+        padding: 10px 16px;
+        color: #edf4ff;
+        background: linear-gradient(135deg, #3a8dff, #7b5cff);
+        cursor: pointer;
+      }
+
+      .back-link {
+        display: inline-block;
+        margin-top: 18px;
+        color: #b8d2ff;
+        text-decoration: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="snake-shell">
+      <div class="snake-header">
+        <h2>Snake</h2>
+        <div class="hud">
+          <div class="hud-box">Score: <strong id="snakeScore">0</strong></div>
+          <div class="hud-box">Best: <strong id="snakeBest">0</strong></div>
+          <div class="hud-box"><span id="snakeStatus">Speel</span></div>
+        </div>
+      </div>
+
+      <canvas id="snakeBoard" width="400" height="400"></canvas>
+
+      <div class="snake-actions">
+        <button type="button" id="snakeRestart" class="primary-btn">Opnieuw</button>
+      </div>
+
+      <div style="text-align:center;">
+        <a class="back-link" href="index.html">Terug naar Game Hub</a>
+      </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="game-multiplayer.js"></script>
+    <script src="snake.js"></script>
+  </body>
+</html>

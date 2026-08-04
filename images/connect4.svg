@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="Connect Four icon">
+  <rect width="200" height="200" rx="28" fill="#0f172a"/>
+  <rect x="16" y="16" width="168" height="168" rx="22" fill="#1d4ed8" opacity="0.9"/>
+  <g fill="none" stroke="#dbeafe" stroke-width="8">
+    <circle cx="50" cy="50" r="22" fill="#ef4444"/>
+    <circle cx="100" cy="50" r="22" fill="#facc15"/>
+    <circle cx="150" cy="50" r="22" fill="#ef4444"/>
+    <circle cx="50" cy="100" r="22" fill="#facc15"/>
+    <circle cx="100" cy="100" r="22" fill="#ef4444"/>
+    <circle cx="150" cy="100" r="22" fill="#facc15"/>
+    <circle cx="50" cy="150" r="22" fill="#ef4444"/>
+    <circle cx="100" cy="150" r="22" fill="#facc15"/>
+    <circle cx="150" cy="150" r="22" fill="#ef4444"/>
+  </g>
+</svg>

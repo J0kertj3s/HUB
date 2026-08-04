@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="Rock Paper Scissors icon">
+  <rect width="200" height="200" rx="28" fill="#0f172a"/>
+  <g font-family="Arial, sans-serif" font-weight="700" text-anchor="middle">
+    <rect x="24" y="38" width="52" height="52" rx="12" fill="#5ae2ff"/>
+    <text x="50" y="76" font-size="26" fill="#0f172a">✊</text>
+    <rect x="74" y="74" width="52" height="52" rx="12" fill="#72f1b8"/>
+    <text x="100" y="112" font-size="26" fill="#0f172a">✋</text>
+    <rect x="124" y="38" width="52" height="52" rx="12" fill="#ff7ddc"/>
+    <text x="150" y="76" font-size="26" fill="#0f172a">✌</text>
+  </g>
+</svg>

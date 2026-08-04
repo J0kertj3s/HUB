@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="nl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Boter Kaas en Eieren</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        font-family: Inter, sans-serif;
+        background: radial-gradient(circle at top, #1a2240, #090d18 55%);
+        color: #edf5ff;
+      }
+      .game-shell {
+        width: min(640px, calc(100% - 30px));
+        padding: 28px 22px;
+        border-radius: 24px;
+        background: rgba(14, 19, 34, 0.82);
+        border: 1px solid rgba(142, 164, 255, 0.18);
+        box-shadow: 0 18px 42px rgba(0, 0, 0, 0.3);
+      }
+      .top-row {
+        display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap;
+      }
+      h2 { margin: 0; font-size: clamp(2rem, 5vw, 2.8rem); }
+      .status {
+        padding: 10px 14px; border-radius: 12px; background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.08); color: #dfeaff; font-weight: 600;
+      }
+      .board {
+        display: grid; grid-template-columns: repeat(3, minmax(80px, 1fr)); gap: 12px; margin-top: 22px;
+      }
+      .cell {
+        aspect-ratio: 1; border-radius: 18px; border: 1px solid rgba(255,255,255,0.08);
+        background: linear-gradient(135deg, rgba(58,141,255,0.08), rgba(123,92,255,0.08));
+        display: grid; place-items: center; font-size: clamp(2.2rem, 6vw, 4rem); font-weight: 800; color: #f4f9ff; cursor: pointer;
+      }
+      .cell:disabled { cursor: default; }
+      .actions { display: flex; justify-content: center; gap: 12px; margin-top: 18px; flex-wrap: wrap; }
+      .primary-btn { border: none; border-radius: 12px; padding: 10px 16px; color: #edf4ff; background: linear-gradient(135deg, #3a8dff, #7b5cff); cursor: pointer; }
+      .room-panel { margin-top: 18px; padding: 14px; border-radius: 14px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); }
+      .room-row { display: flex; gap: 10px; flex-wrap: wrap; }
+      input { flex: 1; min-width: 140px; border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; background: rgba(255,255,255,0.02); color: #fff; padding: 10px 12px; }
+      .back-link { display: inline-block; margin-top: 18px; color: #b8d2ff; text-decoration: none; }
+    </style>
+  </head>
+  <body>
+    <div class="game-shell">
+      <div class="top-row">
+        <h2>Boter Kaas en Eieren</h2>
+        <div id="tttStatus" class="status">Beurt: X</div>
+      </div>
+
+      <div id="tttBoard" class="board" aria-label="Boter Kaas en Eieren veld"></div>
+
+      <div class="actions">
+        <button id="tttRestart" class="primary-btn" type="button">Nieuw spel</button>
+      </div>
+
+      <div class="room-panel">
+        <div class="room-row">
+          <input id="tttRoomInput" type="text" value="TIC1" maxlength="12" placeholder="Room code" />
+          <button id="tttJoinRoom" class="primary-btn" type="button">Join room</button>
+        </div>
+      </div>
+
+      <div style="text-align:center;">
+        <a class="back-link" href="index.html">Terug naar Game Hub</a>
+      </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="game-multiplayer.js"></script>
+    <script src="tictactoe.js"></script>
+  </body>
+</html>

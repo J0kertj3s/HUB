@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="nl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quiz Duel</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      body { margin: 0; min-height: 100vh; display: grid; place-items: center; font-family: Inter, sans-serif; background: radial-gradient(circle at top, #1a2240, #090d18 55%); color: #edf5ff; }
+      .game-shell { width: min(620px, calc(100% - 30px)); padding: 28px 20px; border-radius: 24px; background: rgba(14, 19, 34, 0.82); border: 1px solid rgba(142, 164, 255, 0.18); box-shadow: 0 18px 42px rgba(0,0,0,0.3); }
+      h2 { margin: 0; font-size: clamp(2rem, 5vw, 2.8rem); }
+      .status { margin-top: 16px; padding: 12px 14px; border-radius: 12px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: #dfeaff; font-weight: 600; }
+      .question { margin-top: 18px; padding: 18px; border-radius: 14px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); font-size: 1.1rem; }
+      .answers { display: grid; gap: 10px; margin-top: 18px; }
+      .answer-btn { border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; background: rgba(255,255,255,0.02); color: #edf4ff; padding: 12px 14px; cursor: pointer; text-align: left; }
+      .primary-btn { border: none; border-radius: 12px; padding: 10px 16px; color: #edf4ff; background: linear-gradient(135deg, #3a8dff, #7b5cff); cursor: pointer; }
+      .room-panel { margin-top: 18px; padding: 14px; border-radius: 14px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); }
+      .room-row { display: flex; gap: 10px; flex-wrap: wrap; }
+      input { flex: 1; min-width: 140px; border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; background: rgba(255,255,255,0.02); color: #fff; padding: 10px 12px; }
+      .back-link { display: inline-block; margin-top: 18px; color: #b8d2ff; text-decoration: none; }
+    </style>
+  </head>
+  <body>
+    <div class="game-shell">
+      <h2>Quiz Duel</h2>
+      <div id="quizStatus" class="status">Klaar voor het duel.</div>
+      <div id="quizQuestion" class="question">Volgende vraag...</div>
+      <div id="quizAnswers" class="answers"></div>
+      <div style="display:flex; justify-content:center; margin-top:18px;">
+        <button id="quizNext" class="primary-btn" type="button">Volgende vraag</button>
+      </div>
+      <div class="room-panel">
+        <div class="room-row">
+          <input id="quizRoomInput" type="text" value="QUIZ1" maxlength="12" placeholder="Room code" />
+          <button id="quizJoinRoom" class="primary-btn" type="button">Join room</button>
+        </div>
+      </div>
+      <div style="text-align:center;"><a class="back-link" href="index.html">Terug naar Game Hub</a></div>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="game-multiplayer.js"></script>
+    <script src="quiz-duel.js"></script>
+  </body>
+</html>
